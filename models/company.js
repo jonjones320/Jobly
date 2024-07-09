@@ -13,7 +13,7 @@ class Company {
    *
    * Returns { handle, name, description, numEmployees, logoUrl }
    *
-   * Throws BadRequestError if company already in database.
+   * Throws BadRequestError if company is already in database.
    * */
 
   static async create({ handle, name, description, numEmployees, logoUrl }) {
