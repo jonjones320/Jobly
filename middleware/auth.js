@@ -42,8 +42,19 @@ function ensureLoggedIn(req, res, next) {
   }
 }
 
+function ensureAdmin(req, res, next) {
+  try {
+    if (!req.user || req.user.is_admin !== true) {
+      return next(new ExpressError("Invalid credentials for this action.", 401))
+    }
+  } catch(err) {
+    return next(err);
+  }
+}
+
 
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
+  ensureAdmin
 };
