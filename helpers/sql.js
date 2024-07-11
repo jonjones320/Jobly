@@ -13,7 +13,7 @@ const { BadRequestError } = require("../expressError");
 
 
 // Receives two arguments:
-//    'dataToUpdate': object with keys showing the fields to update and values equalling the new values.
+//    'dataToUpdate': object with keys showing the fields to update and values equaling the new values.
 //    'jsToSql': object which directs which database column names to map.
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
 
