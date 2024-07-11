@@ -44,22 +44,66 @@ class Company {
     return company;
   }
 
+
+
+
   /** Find all companies.
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll() {
-    const companiesRes = await db.query(
-          `SELECT handle,
-                  name,
-                  description,
-                  num_employees AS "numEmployees",
-                  logo_url AS "logoUrl"
-           FROM companies
-           ORDER BY name`);
+  static async findAll(filters = {}) {
+    // SQL query starting point that will be built-on with filters
+    // If no filters, this is the entirety of the query.
+    let query =
+      `SELECT handle,
+              name,
+              description,
+              num_employees AS "numEmployees",
+              logo_url AS "logoUrl"
+      FROM companies`;
+    
+    // values will be all of the filter values for SQL to inject.
+    let values = [];
+    // slqToInsert is the SQL strings with the designator correlating to the filter values. 
+    let sqlToInsert = [];
+
+    // declare each filter individually.
+    const { name, minEmployees, maxEmployees} = filters;
+
+    // filter input value (if any) is put into the values list and designated its SQL string 
+    // based on position in the list. SQL uses the input to search 
+    // with no regards to case-sensitivity nor positioning in a word or phrase. 
+    if (name !== undefined) {
+      values.push(`%${name}%`);
+      sqlToInsert.push(`name ILIKE $${values.length}`)
+    }
+    // num_employees filtering works the same except greater-than/less-than is 
+    // applied relative to the number of employees, instead of a search function.
+    if (minEmployees !== undefined) {
+      values.push(`%${minEmployees}%`);
+      sqlToInsert.push(`num_employees >= $${values.length}`)
+    }
+    if (maxEmployees !== undefined) {
+      values.push(`%${maxEmployees}%`);
+      sqlToInsert.push(`num_employees <= $${values.length}`)
+    }
+    
+    // If there is multiple filters, creates the SQL string: 
+    // `WHERE filter AND notherFilter AND notherOne`
+    if (sqlToInsert.length > 0) {
+      query += "WHERE" + sqlToInsert.join(" AND ");
+    }
+
+    // then add the organizing SQL to complete the query string.
+    query += `ORDER BY name`;
+    // query the database for all companies with the applied filters.
+    const companiesRes = await db.query(query, values);
     return companiesRes.rows;
-  }
+  };
+
+
+
 
   /** Given a company handle, return data about company.
    *
