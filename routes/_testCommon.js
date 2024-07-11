@@ -92,7 +92,7 @@ async function commonBeforeAll() {
       id: "j3",
       name: "Consulting civil engineer",
       salary: 60000,
-      equity: "Desc3",
+      equity: 1,
       companyHandle: "sellers-bryant",
     });
 }
