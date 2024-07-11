@@ -97,7 +97,25 @@ describe("GET /companies", function () {
     });
   });
 
-  test("")
+  test("works: name filter", async function() {
+    const resp = await request(app).get("/companies").query({ name: "c1" });
+    expect(resp.statusCode).toEqual(200);
+    expect(resp.body).toEqual(
+      {
+        handle: "c1",
+        name: "C1",
+        description: "Desc1",
+        numEmployees: 1,
+        logoUrl: "http://c1.img",
+      });
+  })
+
+  test("fails: minEmployees greater than maxEmployees", async function() {
+    const resp = await request(app).get("/companies").query(
+      { minEmployees : 3, maxEmployees : 1}
+    );
+    expect(resp.statusCode).toEqual(400);
+  });
 
   test("fails: test next() handler", async function () {
     // there's no normal failure event which will cause this route to fail ---
