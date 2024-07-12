@@ -279,6 +279,55 @@ describe("PATCH /users/:username", () => {
   });
 });
 
+/************************************** POST /users/:username/jobs/:id */
+// creates application for new job for a user
+
+describe("POST /users/:username/jobs/:id", function () {
+  test("works", async function () {
+    const resp = await request(app)
+        .post("/users/u1/jobs/1")
+        .send({
+          username: "u1",
+          jobId : "1"
+        })
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(201);
+    expect(resp.body).toEqual(
+      { applied: "1" });
+  });
+
+  test("unauth for anon", async function () {
+    const resp = await request(app)
+        .post("/users/u1/jobs/1")
+        .send({
+          username: "u1",
+          jobId : "1"
+        });
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("bad request if missing data", async function () {
+    const resp = await request(app)
+        .post("/users/u1/jobs/1")
+        .send({
+          username: "u1"
+        })
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("bad request if invalid data", async function () {
+    const resp = await request(app)
+        .post("/users/u1/jobs/1")
+        .send({
+          username: 123,
+          jobId : "notANumber"
+        })
+        .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+});
+
 /************************************** DELETE /users/:username */
 
 describe("DELETE /users/:username", function () {
