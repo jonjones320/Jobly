@@ -117,8 +117,9 @@ router.patch("/:username", ensureAdmin, async function (req, res, next) {
 
 router.post("/users/:username/jobs/:id ", ensureLoggedIn, async function (req, res, next) {
   try {
-    const application = await User.apply(res.params.username, res.params.id)
-    return res.status(201).json({ application });
+    const { username, id} = req.params;
+    const application = await User.apply(username, id);
+    return res.status(201).json(application);
   } catch (err) {
     return next(err);
   }
