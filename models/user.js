@@ -141,6 +141,15 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
 
+    const jobsRes = await db.query(
+      `SELECT job_id
+      FROM applications
+      WHERE username = $1`,
+      [username],
+    );
+
+    user.jobs = jobsRes.rows.map(job => job.job_id);
+
     return user;
   }
 
@@ -195,30 +204,29 @@ class User {
 
   // Submits application for a specific job for this user //
   
-  static async apply(jobId, username) {
-    // has the user already applied for this job?
+  static async apply(username, jobId) {
+    // Has the user already applied for this job?
     const duplicateCheck = await db.query(
       `SELECT username
        FROM applications
-       WHERE job_id = $1`,
-    [jobId],
+       WHERE username = $1 AND job_id = $2`,
+    [username, jobId],
     );
     if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate username: ${username}`);
+      throw new BadRequestError(`Duplicate application: ${username} already applied for job ${jobId}`);
     }
 
-    // create new entry into the application table and return data.
+    // create new entry into the application table.
     let result = await db.query(
       `INSERT INTO applications
-        (username,
-        job_id)
+        (username, job_id)
       VALUES ($1, $2)
       RETURNING username, job_id`,
       [ username, jobId ],
     )
 
     return { "applied" : jobId};
-  }
+  };
 
 
 
