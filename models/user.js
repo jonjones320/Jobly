@@ -49,6 +49,8 @@ class User {
     throw new UnauthorizedError("Invalid username/password");
   }
 
+
+
   /** Register user with data.
    *
    * Returns { username, firstName, lastName, email, isAdmin }
@@ -58,13 +60,13 @@ class User {
 
   static async register(
       { username, password, firstName, lastName, email, isAdmin }) {
+
     const duplicateCheck = await db.query(
           `SELECT username
            FROM users
            WHERE username = $1`,
         [username],
     );
-
     if (duplicateCheck.rows[0]) {
       throw new BadRequestError(`Duplicate username: ${username}`);
     }
@@ -189,6 +191,36 @@ class User {
     delete user.password;
     return user;
   }
+
+
+  // Submits application for a specific job for this user //
+  
+  static async apply(jobId, username) {
+    // has the user already applied for this job?
+    const duplicateCheck = await db.query(
+      `SELECT username
+       FROM applications
+       WHERE job_id = $1`,
+    [jobId],
+    );
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(`Duplicate username: ${username}`);
+    }
+
+    // create new entry into the application table and return data.
+    let result = await db.query(
+      `INSERT INTO applications
+        (username,
+        job_id)
+      VALUES ($1, $2)
+      RETURNING username, job_id`,
+      [ username, jobId ],
+    )
+
+    const application = result.rows[0];
+  }
+
+
 
   /** Delete given user from database; returns undefined. */
 
