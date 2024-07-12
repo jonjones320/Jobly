@@ -232,24 +232,20 @@ describe("remove", function () {
 /************************************** apply */
 
 describe("apply", function () {
-  const newApplication = {
-    username : "u3",
-    jobId : "3"
-  }
-
+// tests the normal user applying for a job method
   test("works", async function() {
-    const application = await User.apply("u3", "3")
-    expect(application).toEqual(newApplication)
+    const application = await User.apply("u3", 3)
+    expect(application).toEqual({ applied: 3});
     
     const found = await db.query("SELECT * FROM applications WHERE username = 'u3'");
     expect(found.rows.length).toEqual(1);
-    expect(found.rows[0].job_id).toEqual("3");
+    expect(found.rows[0].job_id).toEqual(3);
   })
-
+  //tests that the method catches duplicate data from being stored 
   test("bad request with dup data", async function () {
     try {
-      await User.apply("u2", "2",);
-      await User.apply("u2", "2",);
+      await User.apply("u2", 2,);
+      await User.apply("u2", 2,);
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
