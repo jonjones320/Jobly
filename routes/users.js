@@ -104,6 +104,28 @@ router.patch("/:username", ensureAdmin, async function (req, res, next) {
 });
 
 
+
+/** POST / { user }  => { user, token }
+ *
+ * User applies for a job.
+ *
+ * This returns the jobId.
+ *  {applied : jobId }
+ *
+ * Authorization required: log in
+ **/
+
+router.post("/users/:username/jobs/:id ", ensureLoggedIn, async function (req, res, next) {
+  try {
+    const application = await User.apply(res.params.username, res.params.id)
+    return res.status(201).json({ application });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+
+
 /** DELETE /[username]  =>  { deleted: username }
  *
  * Authorization required: admin
