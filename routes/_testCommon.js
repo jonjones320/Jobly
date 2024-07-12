@@ -73,7 +73,7 @@ async function commonBeforeAll() {
   });
   await Job.create(
     {
-      id: "j1",
+      id: "1",
       title: "Conservator",
       salary: 110000,
       equity: "0",
@@ -81,7 +81,7 @@ async function commonBeforeAll() {
     });
   await Job.create(
     {
-      id: "j2",
+      id: "2",
       name: "Information officer",
       salary: 200000,
       equity: "0",
@@ -89,7 +89,7 @@ async function commonBeforeAll() {
     });
   await Job.create(
     {
-      id: "j3",
+      id: "2",
       name: "Consulting civil engineer",
       salary: 60000,
       equity: 1,
