@@ -234,22 +234,22 @@ describe("remove", function () {
 describe("apply", function () {
   const newApplication = {
     username : "u3",
-    jobId : "j3"
+    jobId : "3"
   }
 
   test("works", async function() {
-    const application = await User.apply("u3", "j3")
+    const application = await User.apply("u3", "3")
     expect(application).toEqual(newApplication)
     
     const found = await db.query("SELECT * FROM applications WHERE username = 'u3'");
     expect(found.rows.length).toEqual(1);
-    expect(found.rows[0].job_id).toEqual("j3");
+    expect(found.rows[0].job_id).toEqual("3");
   })
 
   test("bad request with dup data", async function () {
     try {
-      await User.apply("u2", "j2",);
-      await User.apply("u2", "j2",);
+      await User.apply("u2", "2",);
+      await User.apply("u2", "2",);
       fail();
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
