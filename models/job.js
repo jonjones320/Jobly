@@ -69,7 +69,7 @@ class Job {
     let sqlToInsert = [];
 
     // declare each filter individually.
-    const { title, minSalary, hasEquity} = filters;
+    const { title, minSalary, hasEquity } = filters;
 
     // The filter input value (if any) is put into the values list and designated its SQL string 
     // based on position in the list. SQL uses the input to search 
@@ -80,7 +80,7 @@ class Job {
     }
     // equity filtering is a simple Boolean check.
     if (hasEquity !== false) {
-      values.push(`%True%`);
+      values.push(`0`);
       sqlToInsert.push(`equity > $${values.length}`)
     }
     // minSalary (if selected) will return results higher than the minSalary filter.
@@ -92,13 +92,14 @@ class Job {
     // If there is multiple filters, creates the SQL string, 
     // example: `WHERE filter AND notherFilter AND notherOne`
     if (sqlToInsert.length > 0) {
-      query += "WHERE" + sqlToInsert.join(" AND ");
+      query += " WHERE " + sqlToInsert.join(" AND ");
     }
 
     // then add the organizing SQL to complete the query string.
-    query += `ORDER BY title`;
+    query += ` ORDER BY title`;
     // query the database for all jobs with the applied filters.
     const jobsRes = await db.query(query, values);
+    
     return jobsRes.rows;
   };
 
