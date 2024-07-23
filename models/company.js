@@ -92,12 +92,14 @@ class Company {
     // If there is multiple filters, creates the SQL string: 
     // `WHERE filter AND notherFilter AND notherOne`
     if (sqlToInsert.length > 0) {
-      query += "WHERE" + sqlToInsert.join(" AND ");
+      query += " WHERE " + sqlToInsert.join(" AND ");
     }
 
     // then add the organizing SQL to complete the query string.
-    query += `ORDER BY name`;
+    query += ` ORDER BY name`;
     // query the database for all companies with the applied filters.
+    console.log("###QUERY###: ", query);
+    console.log("###VALUES###: ", values);
     const companiesRes = await db.query(query, values);
     return companiesRes.rows;
   };

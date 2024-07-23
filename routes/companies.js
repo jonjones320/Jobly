@@ -54,7 +54,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   try {
     // check validation of filters
-    const result = jsonschema.validate(req.query, filterCompanySchema);
+    const result = jsonschema.validate(req.query, companyFilterSchema);
     if (!result.valid) {
       // pass validation errors to error handler
       // each error is mapped in the stack
