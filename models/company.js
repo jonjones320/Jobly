@@ -98,9 +98,8 @@ class Company {
     // then add the organizing SQL to complete the query string.
     query += ` ORDER BY name`;
     // query the database for all companies with the applied filters.
-    console.log("###QUERY###: ", query);
-    console.log("###VALUES###: ", values);
     const companiesRes = await db.query(query, values);
+    
     return companiesRes.rows;
   };
 
